@@ -1,6 +1,7 @@
 
 function Board () {
   this.paths = {};
+  this.players = {};
 }
 
 Board.SPECIAL_NAMES = ['Graveyard', 'Reserve'];
@@ -42,6 +43,25 @@ Board.prototype.nodesReaching = function (to) {
     return ~self.paths[from].indexOf(to);
   });
 };
+
+Board.prototype.addPlayer = function (player) {
+  this.players[player.id] = player;
+
+  return this;
+}
+
+
+function Player (board, name) {
+  // FIXME UUID
+  this.id = String(Math.round(Math.random()*1000));
+
+  this.name = name;
+  this.units = [];
+
+  this.board = board;
+  this.board.addPlayer(this);
+}
+
 
 
 

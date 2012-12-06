@@ -3,7 +3,12 @@ function Board () {
   this.paths = {};
 }
 
+Board.SPECIAL_NAMES = ['Graveyard', 'Reserve'];
+
 Board.prototype.addPath = function (from, to, oriented) {
+  if (~Board.SPECIAL_NAMES.indexOf(from)) {
+    throw new Error('Reserved name');
+  }
   var self = this;
   if (!Array.isArray(to)) {
     to = [to];

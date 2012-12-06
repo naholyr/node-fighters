@@ -32,10 +32,14 @@ In every board, the following rules will be always true:
 
 * Every node is reachable from your current position.
 * A "Checkpoint" is a special node. It has no specific property instead it's a checkpoint, a strategic point on the board.
-* Usually, every node with 3 or more links is a checkpoint (in our example it will be B, C, G, F and D).
+* Usually, every node with 3 or more links is a checkpoint (in our example it will be A, B, C, D, F and G).
 * Every board has at least one checkpoint.
 
 A checkpoint is visually identified on the board to distinguish it from standard nodes.
+
+#### Reachable nodes
+
+From a given position, you should be able to reach all directly linked positions. Graphs should never be oriented unless very specific conditions that will be clearly visible.
 
 ### Winning the game
 

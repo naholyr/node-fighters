@@ -56,13 +56,31 @@ function Player (board, name) {
   this.id = String(Math.round(Math.random()*1000));
 
   this.name = name;
-  this.units = [];
+  this.units = {};
 
   this.board = board;
   this.board.addPlayer(this);
 }
 
+Player.prototype.addUnit = function (unit) {
+  this.units[unit.id] = unit;
+};
 
+
+function Unit (player, force, armor, health) {
+  // FIXME UUID
+  this.id = String(Math.round(Math.random()*1000));
+
+  this.force = force;
+  this.armor = armor;
+  this.health = health;
+
+  this.board = board;
+  this.position = BOARD.RESERVE;
+
+  this.player = player;
+  this.player.addUnit(this);
+}
 
 
 /*

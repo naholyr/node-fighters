@@ -91,6 +91,10 @@ function link (label1, label2, oriented) {
         return;
     }
 
+    if (!nodes[label1] || !nodes[label2]) {
+        return;
+    }
+
     if (links[label1] && links[label1][label2]) {
         links[label1][label2].remove();
         delete links[label1][label2];

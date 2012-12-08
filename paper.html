@@ -153,13 +153,54 @@ function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
     radius1 *= d2;
     radius2 *= d2;
 
-
     var path = new Path([p1a, p2a, p2b, p1b]);
     path.style = ball1.style;
     path.closed = true;
 
+    var from, to;
+    var p1 = ball1.position;
+    var p2 = ball2.position;
+    var r1 = ball1.bounds.width/2;
+    var r2 = ball2.bounds.width/2;
+    if (p1.x == p2.x) {
+        // Abscisses identiques: dégradé vertical
+        if (p1.y > p2.y) {
+            // P1 est au-dessous de P2, dégradé entre Y2+R2 et Y1-R1
+            from = p2 + [0, r2];
+            to = p1 - [0, r1];
+        } else {
+            // P1 est au-dessus de P2, dégradé entre Y1+R1 et Y2-R2
+            from = p1 + [0, r1];
+            to = p2 - [0, r2];
+        }
+    } else {
+        /*
+        Calculer les points de départ et d'arrivé du gradient:
+        intersections entre les cercles et la droite déterminée par les deux rayons
+
+        Droite: y = (y2-y1)/(x2-x1) * x + (y1-x1*(y2-y1)/(x2-x1))
+
+        Coordonnées point sur cercle:
+            x = xc + r*cos(A)
+            y = yc + r*sin(A)
+
+        Angle d'une droite: y = a*x + b
+            A = atan(a)
+        */
+        var x1 = ball1.position.x, y1 = ball1.position.y;
+        var x2 = ball2.position.x, y2 = ball2.position.y;
+        var A = Math.atan((y2 - y1) / (x2 - x1));
+        // Le point le plus à droite doit être ramené sur la partie gauche de son cercle
+        if (x1 < x2) {
+            from = [ x1 + r1 * Math.cos(A), y1 + r1 * Math.sin(A) ];
+            to = [ x2 - r2 * Math.cos(A), y2 - r2 * Math.sin(A) ];
+        } else {
+            from = [ x1 - r1 * Math.cos(A), y1 - r1 * Math.sin(A) ];
+            to = [ x2 + r2 * Math.cos(A), y2 + r2 * Math.sin(A) ];
+        }
+    }
     var gradient = new Gradient([ball1.fillColor, ball2.fillColor]);
-    path.fillColor = new GradientColor(gradient, ball1.position, ball2.position);
+    path.fillColor = new GradientColor(gradient, from, to);
 
     var segments = path.segments;
     segments[0].handleOut = getVector(angle1a - pi2, radius1);

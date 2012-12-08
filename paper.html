@@ -48,6 +48,8 @@ function node (label, x, y, background) {
         redrawLinks(label);
     });
     circle.attach('mousedown', function () {
+        project.activeLayer.addChild(item.circle);
+        project.activeLayer.addChild(item.text);
         this.selected = true;
     });
     circle.attach('mouseup', function () {

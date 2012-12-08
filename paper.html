@@ -157,6 +157,9 @@ function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
     path.style = ball1.style;
     path.closed = true;
 
+    var gradient = new Gradient([ball1.fillColor, ball2.fillColor]);
+    path.fillColor = new GradientColor(gradient, ball1.position, ball2.position);
+
     var segments = path.segments;
     segments[0].handleOut = getVector(angle1a - pi2, radius1);
     segments[1].handleIn = getVector(angle2a + pi2, radius2);

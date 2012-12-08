@@ -6,208 +6,206 @@
 <!-- Define inlined PaperScript associate it with myCanvas -->
 <script type="text/paperscript" canvas="myCanvas">
 
-
-
 /*
    [A]----+-----[B]-----[C]-------[H]
-    |     |      |       |         |
-    |     |      |       |         |
-    |    [G]----[F]      |         |
-    |     |      |       |         |
-    |     |      |       |         |
-    +----[D]-----+------[E]        |
-          |                        |
-          +------------------------+
+  |     |      |       |         |
+  |     |      |       |         |
+  |    [G]----[F]      |         |
+  |     |      |       |         |
+  |     |      |       |         |
+  +----[D]-----+------[E]        |
+      |                        |
+      +------------------------+
 */
 
 // Ported from original Metaball script by SATO Hiroyuki
 // http://park12.wakwak.com/~shp/lc/et/en_aics_script.html
 project.currentStyle = {
-    fillColor: 'black'
+  fillColor: 'black'
 };
 
 var nodes = {};
 
 function node (label, x, y, background) {
-    var circle = new Path.Circle([x, y], 50);
-    circle.name = 'circle';
-    circle.fillColor = background || 'black';
+  var circle = new Path.Circle([x, y], 50);
+  circle.name = 'circle';
+  circle.fillColor = background || 'black';
 
-    var text = new PointText([x, y]);
-    text.name = 'text';
-    text.justification = 'center';
-    text.fillColor = 'white';
-    text.content = label + ': ' + x + ',' + y;
+  var text = new PointText([x, y]);
+  text.name = 'text';
+  text.justification = 'center';
+  text.fillColor = 'white';
+  text.content = label + ': ' + x + ',' + y;
 
-    var item = {circle: circle, text: text};
+  var item = {circle: circle, text: text};
 
-    circle.attach('mousedrag', function (event) {
-        circle.translate(event.delta);
-        text.translate(event.delta);
-        if (item.glow) {
-            item.glow.translate(event.delta);
-        }
-        text.content = label + ': ' + circle.position.x + ',' + circle.position.y;
-        redrawLinks(label);
-    });
-    circle.attach('mousedown', function () {
-        // Bring to front
-        project.activeLayer.addChild(item.circle);
-        project.activeLayer.addChild(item.text);
-        // Select, and reachable nodes
-        glow(item);
-        if (links[label]) {
-            for (var name in links[label]) {
-                glow(nodes[name]);
-            }
-        }
-    });
-    circle.attach('mouseup', function () {
-        for (var name in nodes) {
-            unglow(nodes[name]);
-        }
-    });
+  circle.attach('mousedrag', function (event) {
+    circle.translate(event.delta);
+    text.translate(event.delta);
+    if (item.glow) {
+      item.glow.translate(event.delta);
+    }
+    text.content = label + ': ' + circle.position.x + ',' + circle.position.y;
+    redrawLinks(label);
+  });
+  circle.attach('mousedown', function () {
+    // Bring to front
+    project.activeLayer.addChild(item.circle);
+    project.activeLayer.addChild(item.text);
+    // Select, and reachable nodes
+    glow(item);
+    if (links[label]) {
+      for (var name in links[label]) {
+        glow(nodes[name]);
+      }
+    }
+  });
+  circle.attach('mouseup', function () {
+    for (var name in nodes) {
+      unglow(nodes[name]);
+    }
+  });
 
-    nodes[label] = item;
+  nodes[label] = item;
 
-    return item;
+  return item;
 }
 
 function glow (node) {
-    if (node.glow) {
-        return;
-    }
-    node.glow = new Path.Circle(node.circle.position, node.circle.bounds.width/2);
-    node.glow.style = {
-        fillColor: null,
-        strokeColor: 'red',
-        strokeWidth: 10
-    };
+  if (node.glow) {
+    return;
+  }
+  node.glow = new Path.Circle(node.circle.position, node.circle.bounds.width/2);
+  node.glow.style = {
+    fillColor: null,
+    strokeColor: 'red',
+    strokeWidth: 10
+  };
 }
 
 function unglow (node) {
-    if (!node.glow) {
-        return;
-    }
-    node.glow.remove();
-    delete node.glow;
+  if (!node.glow) {
+    return;
+  }
+  node.glow.remove();
+  delete node.glow;
 }
 
 function redrawLinks (label) {
-    if (links[label]) {
-        for (var label2 in links[label]) {
-            link(label, label2);
-        }
+  if (links[label]) {
+    for (var label2 in links[label]) {
+      link(label, label2);
     }
-    // Bring all glows to front, above links
-    for (var name in nodes) {
-        if (nodes[name] && nodes[name].glow) {
-            project.activeLayer.addChild(nodes[name].glow);
-        }
+  }
+  // Bring all glows to front, above links
+  for (var name in nodes) {
+    if (nodes[name] && nodes[name].glow) {
+      project.activeLayer.addChild(nodes[name].glow);
     }
+  }
 }
 
 var links = {};
 
 function link (label1, label2) {
-    if (Array.isArray(label1)) {
-        label1.forEach(function (label1) { link(label1, label2) });
-        return;
-    }
-    if (Array.isArray(label2)) {
-        label2.forEach(function (label2) { link(label1, label2) });
-        return;
-    }
+  if (Array.isArray(label1)) {
+    label1.forEach(function (label1) { link(label1, label2) });
+    return;
+  }
+  if (Array.isArray(label2)) {
+    label2.forEach(function (label2) { link(label1, label2) });
+    return;
+  }
 
-    if (!nodes[label1] || !nodes[label2]) {
-        return;
-    }
+  if (!nodes[label1] || !nodes[label2]) {
+    return;
+  }
 
-    if (links[label1] && links[label1][label2]) {
-        links[label1][label2].remove();
-        delete links[label1][label2];
-    }
-    if (links[label2] && links[label2][label1]) {
-        links[label2][label1].remove();
-        delete links[label2][label1];
-    }
+  if (links[label1] && links[label1][label2]) {
+    links[label1][label2].remove();
+    delete links[label1][label2];
+  }
+  if (links[label2] && links[label2][label1]) {
+    links[label2][label1].remove();
+    delete links[label2][label1];
+  }
 
-    if (!links[label1]) links[label1] = {};
-    if (!links[label2]) links[label2] = {};
+  if (!links[label1]) links[label1] = {};
+  if (!links[label2]) links[label2] = {};
 
-    var circle1 = nodes[label1].circle;
-    var circle2 = nodes[label2].circle;
-    var connection = metaball(circle1, circle2, 0.3, 1.5, 2000);
+  var circle1 = nodes[label1].circle;
+  var circle2 = nodes[label2].circle;
+  var connection = metaball(circle1, circle2, 0.3, 1.5, 2000);
 
-    links[label1][label2] = links[label2][label1] = connection;
+  links[label1][label2] = links[label2][label1] = connection;
 
-    return connection;
+  return connection;
 }
 
 
 function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
-    var center1 = ball1.position;
-    var center2 = ball2.position;
-    var radius1 = ball1.bounds.width / 2;
-    var radius2 = ball2.bounds.width / 2;
-    var pi2 = Math.PI / 2;
-    var d = center1.getDistance(center2);
+  var center1 = ball1.position;
+  var center2 = ball2.position;
+  var radius1 = ball1.bounds.width / 2;
+  var radius2 = ball2.bounds.width / 2;
+  var pi2 = Math.PI / 2;
+  var d = center1.getDistance(center2);
 
-    if (radius1 == 0 || radius2 == 0)
-        return;
+  if (radius1 == 0 || radius2 == 0)
+    return;
 
-    if (d > maxDistance || d <= Math.abs(radius1 - radius2)) {
-        return;
-    } else if (d < radius1 + radius2) { // case circles are overlapping
-        return;
-    }
+  if (d > maxDistance || d <= Math.abs(radius1 - radius2)) {
+    return;
+  } else if (d < radius1 + radius2) { // case circles are overlapping
+    return;
+  }
 
-    var angle1 = (center2 - center1).getAngleInRadians();
-    var angle2 = Math.acos((radius1 - radius2) / d);
-    var angle1a = angle1 + angle2 * v;
-    var angle1b = angle1 - angle2 * v;
-    var angle2a = angle1 + Math.PI - (Math.PI - angle2) * v;
-    var angle2b = angle1 - Math.PI + (Math.PI - angle2) * v;
-    var p1a = center1 + getVector(angle1a, radius1);
-    var p1b = center1 + getVector(angle1b, radius1);
-    var p2a = center2 + getVector(angle2a, radius2);
-    var p2b = center2 + getVector(angle2b, radius2);
+  var angle1 = (center2 - center1).getAngleInRadians();
+  var angle2 = Math.acos((radius1 - radius2) / d);
+  var angle1a = angle1 + angle2 * v;
+  var angle1b = angle1 - angle2 * v;
+  var angle2a = angle1 + Math.PI - (Math.PI - angle2) * v;
+  var angle2b = angle1 - Math.PI + (Math.PI - angle2) * v;
+  var p1a = center1 + getVector(angle1a, radius1);
+  var p1b = center1 + getVector(angle1b, radius1);
+  var p2a = center2 + getVector(angle2a, radius2);
+  var p2b = center2 + getVector(angle2b, radius2);
 
-    // define handle length by the distance between
-    // both ends of the curve to draw
-    var totalRadius = (radius1 + radius2);
-    var d2 = Math.min(v * handle_len_rate, (p1a - p2a).length / totalRadius);
+  // define handle length by the distance between
+  // both ends of the curve to draw
+  var totalRadius = (radius1 + radius2);
+  var d2 = Math.min(v * handle_len_rate, (p1a - p2a).length / totalRadius);
 
-    // case circles are overlapping:
-    d2 *= Math.min(1, d * 2 / (radius1 + radius2));
+  // case circles are overlapping:
+  d2 *= Math.min(1, d * 2 / (radius1 + radius2));
 
-    radius1 *= d2;
-    radius2 *= d2;
+  radius1 *= d2;
+  radius2 *= d2;
 
-    var path = new Path([p1a, p2a, p2b, p1b]);
-    path.style = ball1.style;
-    path.closed = true;
+  var path = new Path([p1a, p2a, p2b, p1b]);
+  path.style = ball1.style;
+  path.closed = true;
 
-    var from = (p1a + p1b) / 2;
-    var to = (p2a + p2b) / 2;
-    var gradient = new Gradient([ball1.fillColor, ball2.fillColor]);
-    path.fillColor = new GradientColor(gradient, from, to);
+  var from = (p1a + p1b) / 2;
+  var to = (p2a + p2b) / 2;
+  var gradient = new Gradient([ball1.fillColor, ball2.fillColor]);
+  path.fillColor = new GradientColor(gradient, from, to);
 
-    var segments = path.segments;
-    segments[0].handleOut = getVector(angle1a - pi2, radius1);
-    segments[1].handleIn = getVector(angle2a + pi2, radius2);
-    segments[2].handleOut = getVector(angle2b - pi2, radius2);
-    segments[3].handleIn = getVector(angle1b + pi2, radius1);
+  var segments = path.segments;
+  segments[0].handleOut = getVector(angle1a - pi2, radius1);
+  segments[1].handleIn = getVector(angle2a + pi2, radius2);
+  segments[2].handleOut = getVector(angle2b - pi2, radius2);
+  segments[3].handleIn = getVector(angle1b + pi2, radius1);
 
-    return path;
+  return path;
 }
 
 function getVector(radians, length) {
-    return new Point({
-        // Convert radians to degrees:
-        angle: radians * 180 / Math.PI,
-        length: length
-    });
+  return new Point({
+    // Convert radians to degrees:
+    angle: radians * 180 / Math.PI,
+    length: length
+  });
 }
 
 
@@ -229,12 +227,9 @@ link('F', ['D', 'E']);
 link('D', 'H');
 link('E', 'D');
 
-
-
-
 </script>
 </head>
 <body>
-    <canvas id="myCanvas" resize></canvas>
+  <canvas id="myCanvas" resize></canvas>
 </body>
 </html>

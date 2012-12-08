@@ -44,16 +44,28 @@ function node (label, x, y, background) {
     circle.attach('mousedrag', function (event) {
         circle.translate(event.delta);
         text.translate(event.delta);
+        if (item.glow) {
+            item.glow.translate(event.delta);
+        }
         text.content = label + ': ' + circle.position.x + ',' + circle.position.y;
         redrawLinks(label);
     });
     circle.attach('mousedown', function () {
+        // Bring to front
         project.activeLayer.addChild(item.circle);
         project.activeLayer.addChild(item.text);
-        this.selected = true;
+        // Select, and reachable nodes
+        glow(item);
+        if (links[label]) {
+            for (var name in links[label]) {
+                glow(nodes[name]);
+            }
+        }
     });
     circle.attach('mouseup', function () {
-        this.selected = false;
+        for (var name in nodes) {
+            unglow(nodes[name]);
+        }
     });
 
     nodes[label] = item;
@@ -61,10 +73,36 @@ function node (label, x, y, background) {
     return item;
 }
 
+function glow (node) {
+    if (node.glow) {
+        return;
+    }
+    node.glow = new Path.Circle(node.circle.position, node.circle.bounds.width/2);
+    node.glow.style = {
+        fillColor: null,
+        strokeColor: 'red',
+        strokeWidth: 10
+    };
+}
+
+function unglow (node) {
+    if (!node.glow) {
+        return;
+    }
+    node.glow.remove();
+    delete node.glow;
+}
+
 function redrawLinks (label) {
     if (links[label]) {
         for (var label2 in links[label]) {
             link(label, label2);
+        }
+    }
+    // Bring all glows to front, above links
+    for (var name in nodes) {
+        if (nodes[name] && nodes[name].glow) {
+            project.activeLayer.addChild(nodes[name].glow);
         }
     }
 }

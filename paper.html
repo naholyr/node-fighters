@@ -64,30 +64,20 @@ function node (label, x, y, background) {
 function redrawLinks (label) {
     if (links[label]) {
         for (var label2 in links[label]) {
-            link(label, label2, true);
-        }
-    }
-    for (var label1 in links) {
-        if (links[label1] && links[label1][label]) {
-            link(label1, label, true);
+            link(label, label2);
         }
     }
 }
 
 var links = {};
 
-function link (label1, label2, oriented) {
+function link (label1, label2) {
     if (Array.isArray(label1)) {
         label1.forEach(function (label1) { link(label1, label2) });
         return;
     }
     if (Array.isArray(label2)) {
         label2.forEach(function (label2) { link(label1, label2) });
-        return;
-    }
-    if (!oriented) {
-        link(label1, label2, true);
-        link(label2, label1, true);
         return;
     }
 
@@ -99,14 +89,19 @@ function link (label1, label2, oriented) {
         links[label1][label2].remove();
         delete links[label1][label2];
     }
+    if (links[label2] && links[label2][label1]) {
+        links[label2][label1].remove();
+        delete links[label2][label1];
+    }
 
     if (!links[label1]) links[label1] = {};
+    if (!links[label2]) links[label2] = {};
 
     var circle1 = nodes[label1].circle;
     var circle2 = nodes[label2].circle;
     var connection = metaball(circle1, circle2, 0.3, 1.5, 2000);
 
-    links[label1][label2] = connection;
+    links[label1][label2] = links[label2][label1] = connection;
 
     return connection;
 }
@@ -176,7 +171,6 @@ function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
 }
 
 function getVector(radians, length) {
-    console.log(length);
     return new Point({
         // Convert radians to degrees:
         angle: radians * 180 / Math.PI,

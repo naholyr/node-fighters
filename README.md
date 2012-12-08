@@ -65,7 +65,9 @@ Every unit has following characteristics:
 
 Basically, every unit has two abilities:
 
-* Move: the unit moves from its current node to another, directly linked, and free. A node is "free" until there is no enemy unit on it. Yes, you can have more than one of your units on a given node.
+* Move: the unit moves from its current node to another, directly linked, and free. A node is "free" until there is no enemy unit on it.
+ * Yes, you can have more than one of your units on a given node. If a node is not free, then you have to fight one of the enemy units, if you kill it then your unit will move to this node.
+ * Yes, that can be a bad news, prepare your attacks carefully.
 * Defend: the unit does not move and will have a bonus of defense
 * Attack is available only if [F] is not zero: the unit attacks another reachable unit
 
@@ -80,7 +82,7 @@ In addition to those basic abilities, you can have some common others:
 
 Some more specific abilites are available for specific units, you'll discover them :)
 
-Some units have a given "role", and are visually identifiable:
+Each unit is given a role, depending its abilities. Here are some examples:
 
 * Leader: a unit with "Flag" ability (it usually comes with "Motivate" ability too).
 * Medic: a unit with "Heal" ability.

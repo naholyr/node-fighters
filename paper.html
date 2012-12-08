@@ -114,7 +114,6 @@ function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
     var radius2 = ball2.bounds.width / 2;
     var pi2 = Math.PI / 2;
     var d = center1.getDistance(center2);
-    var u1, u2;
 
     if (radius1 == 0 || radius2 == 0)
         return;
@@ -122,21 +121,15 @@ function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
     if (d > maxDistance || d <= Math.abs(radius1 - radius2)) {
         return;
     } else if (d < radius1 + radius2) { // case circles are overlapping
-        u1 = Math.acos((radius1 * radius1 + d * d - radius2 * radius2) /
-                (2 * radius1 * d));
-        u2 = Math.acos((radius2 * radius2 + d * d - radius1 * radius1) /
-                (2 * radius2 * d));
-    } else {
-        u1 = 0;
-        u2 = 0;
+        return;
     }
 
     var angle1 = (center2 - center1).getAngleInRadians();
     var angle2 = Math.acos((radius1 - radius2) / d);
-    var angle1a = angle1 + u1 + (angle2 - u1) * v;
-    var angle1b = angle1 - u1 - (angle2 - u1) * v;
-    var angle2a = angle1 + Math.PI - u2 - (Math.PI - u2 - angle2) * v;
-    var angle2b = angle1 - Math.PI + u2 + (Math.PI - u2 - angle2) * v;
+    var angle1a = angle1 + angle2 * v;
+    var angle1b = angle1 - angle2 * v;
+    var angle2a = angle1 + Math.PI - (Math.PI - angle2) * v;
+    var angle2b = angle1 - Math.PI + (Math.PI - angle2) * v;
     var p1a = center1 + getVector(angle1a, radius1);
     var p1b = center1 + getVector(angle1b, radius1);
     var p2a = center2 + getVector(angle2a, radius2);

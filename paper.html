@@ -208,24 +208,16 @@ function getVector(radians, length) {
   });
 }
 
+var config = {CONFIG:"INSERT_HERE"};
 
-
-node('A', 100, 100);
-node('B', 700, 100, 'blue');
-node('C', 1000, 100, 'blue');
-node('H', 1200, 550);
-node('G', 400, 300, 'red');
-node('F', 670, 340, 'orange');
-node('D', 200, 600);
-node('E', 950, 400, 'red');
-
-link('A', ['B', 'G', 'D']);
-link('B', ['C', 'F']);
-link('C', ['E', 'H']);
-link('G', ['F', 'D']);
-link('F', ['D', 'E']);
-link('D', 'H');
-link('E', 'D');
+if (config.nodes && config.paths) {
+  for (var name in config.nodes) {
+    node(name, config.nodes[name].x, config.nodes[name].y, config.nodes[name].color);
+  }
+  for (var name in config.paths) {
+    link(name, config.paths[name]);
+  }
+}
 
 </script>
 </head>

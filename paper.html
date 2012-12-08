@@ -157,48 +157,8 @@ function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
     path.style = ball1.style;
     path.closed = true;
 
-    var from, to;
-    var p1 = ball1.position;
-    var p2 = ball2.position;
-    var r1 = ball1.bounds.width/2;
-    var r2 = ball2.bounds.width/2;
-    if (p1.x == p2.x) {
-        // Abscisses identiques: dégradé vertical
-        if (p1.y > p2.y) {
-            // P1 est au-dessous de P2, dégradé entre Y2+R2 et Y1-R1
-            from = p2 + [0, r2];
-            to = p1 - [0, r1];
-        } else {
-            // P1 est au-dessus de P2, dégradé entre Y1+R1 et Y2-R2
-            from = p1 + [0, r1];
-            to = p2 - [0, r2];
-        }
-    } else {
-        /*
-        Calculer les points de départ et d'arrivé du gradient:
-        intersections entre les cercles et la droite déterminée par les deux rayons
-
-        Droite: y = (y2-y1)/(x2-x1) * x + (y1-x1*(y2-y1)/(x2-x1))
-
-        Coordonnées point sur cercle:
-            x = xc + r*cos(A)
-            y = yc + r*sin(A)
-
-        Angle d'une droite: y = a*x + b
-            A = atan(a)
-        */
-        var x1 = ball1.position.x, y1 = ball1.position.y;
-        var x2 = ball2.position.x, y2 = ball2.position.y;
-        var A = Math.atan((y2 - y1) / (x2 - x1));
-        // Le point le plus à droite doit être ramené sur la partie gauche de son cercle
-        if (x1 < x2) {
-            from = [ x1 + r1 * Math.cos(A), y1 + r1 * Math.sin(A) ];
-            to = [ x2 - r2 * Math.cos(A), y2 - r2 * Math.sin(A) ];
-        } else {
-            from = [ x1 - r1 * Math.cos(A), y1 - r1 * Math.sin(A) ];
-            to = [ x2 + r2 * Math.cos(A), y2 + r2 * Math.sin(A) ];
-        }
-    }
+    var from = (p1a + p1b) / 2;
+    var to = (p2a + p2b) / 2;
     var gradient = new Gradient([ball1.fillColor, ball2.fillColor]);
     path.fillColor = new GradientColor(gradient, from, to);
 
@@ -221,18 +181,14 @@ function getVector(radians, length) {
 
 
 
-
-
-
-
 node('A', 100, 100);
-node('B', 700, 100);
+node('B', 700, 100, 'blue');
 node('C', 1000, 100, 'blue');
 node('H', 1200, 550);
-node('G', 400, 300);
-node('F', 670, 340);
+node('G', 400, 300, 'red');
+node('F', 670, 340, 'orange');
 node('D', 200, 600);
-node('E', 950, 400);
+node('E', 950, 400, 'red');
 
 link('A', ['B', 'G', 'D']);
 link('B', ['C', 'F']);

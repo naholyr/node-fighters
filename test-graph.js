@@ -15,4 +15,9 @@ var config = require('./board.json');
 
 var board = new Board(config);
 
-console.log(board.nodesReaching('B'));
+console.log(board.reachableNodes('B'));
+
+console.log(board.getUnitsAt('B'));
+
+// should throw "you must attack"
+board.getUnitsAt('B')[0].moveTo('C');

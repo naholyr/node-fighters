@@ -44,6 +44,7 @@ function node (label, x, y, background) {
     text.content = label + ': ' + circle.position.x + ',' + circle.position.y;
     redrawLinks(label);
   });
+
   circle.attach('mousedown', function () {
     // Bring to front
     project.activeLayer.addChild(item.circle);
@@ -54,7 +55,10 @@ function node (label, x, y, background) {
         project.activeLayer.addChild(units[unit.id]);
       });
     }
-    // Select, and reachable nodes
+  });
+
+  circle.attach('mouseenter', function () {
+    // Show reachable nodes
     glow(item);
     if (links[label]) {
       for (var name in links[label]) {
@@ -62,7 +66,8 @@ function node (label, x, y, background) {
       }
     }
   });
-  circle.attach('mouseup', function () {
+
+  circle.attach('mouseleave', function () {
     for (var name in nodes) {
       unglow(nodes[name]);
     }
@@ -212,6 +217,7 @@ function getVector(radians, length) {
 }
 
 var units = {};
+var selectedUnit = null;
 
 function drawUnit (unit) {
   // unit's index
@@ -239,7 +245,24 @@ function drawUnit (unit) {
   text.fillColor = 'black';
   text.content = unit.force + '-' + unit.armor + ' (' + unit.health + ')';
 
-  units[unit.id] = new Group(path, text);
+  var group = units[unit.id] = new Group(path, text);
+
+  group.attach('mouseenter', function () {
+    path.fullySelected = true;
+  });
+
+  group.attach('mousedown', function () {
+    if (selectedUnit) {
+      units[selectedUnit].fullySelected = false;
+    }
+    selectedUnit = unit.id;
+  });
+
+  group.attach('mouseleave', function () {
+    if (selectedUnit != unit.id) {
+      path.fullySelected = false;
+    }
+  });
 
   return units[unit.id];
 }

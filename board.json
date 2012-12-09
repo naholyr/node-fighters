@@ -17,5 +17,23 @@
     "F": {"x": 670,  "y": 340, "color": "orange"},
     "D": {"x": 200,  "y": 600},
     "E": {"x": 950,  "y": 400, "color": "red"}
+  },
+  "players": {
+    "john": {
+      "units": [
+        {"force": 3, "armor": 2, "health": 8, "position": "A"},
+        {"force": 1, "armor": 2, "health": 8},
+        {"force": 0, "armor": 4, "health": 3, "position": "C"},
+        {"force": 0, "armor": 1, "health": 20}
+      ]
+    },
+    "albert": {
+      "units": [
+        {"force": 2, "armor": 2, "health": 12, "position": "B"},
+        {"force": 1, "armor": 1, "health": 13},
+        {"force": 1, "armor": 3, "health": 3, "position": "B"},
+        {"force": 1, "armor": 1, "health": 20, "position": "D"}
+      ]
+    }
   }
 }

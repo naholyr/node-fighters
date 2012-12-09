@@ -5,21 +5,6 @@
 <script type="text/javascript" src="paperjs-nightly/lib/paper.js"></script>
 <!-- Define inlined PaperScript associate it with myCanvas -->
 <script type="text/paperscript" canvas="myCanvas">
-
-/*
-   [A]----+-----[B]-----[C]-------[H]
-  |     |      |       |         |
-  |     |      |       |         |
-  |    [G]----[F]      |         |
-  |     |      |       |         |
-  |     |      |       |         |
-  +----[D]-----+------[E]        |
-      |                        |
-      +------------------------+
-*/
-
-// Ported from original Metaball script by SATO Hiroyuki
-// http://park12.wakwak.com/~shp/lc/et/en_aics_script.html
 project.currentStyle = {
   fillColor: 'black'
 };
@@ -142,7 +127,8 @@ function link (label1, label2) {
   return connection;
 }
 
-
+// Ported from original Metaball script by SATO Hiroyuki
+// http://park12.wakwak.com/~shp/lc/et/en_aics_script.html
 function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
   var center1 = ball1.position;
   var center2 = ball2.position;

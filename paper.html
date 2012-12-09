@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="lib/board.js"></script>
+<script>
+var boardConfig = {CONFIG:"INSERT_HERE"};
+var board = new Board(boardConfig);
+</script>
 <!-- Load the Paper.js library -->
-<script type="text/javascript" src="paperjs-nightly/lib/paper.js"></script>
+<script src="paperjs-nightly/lib/paper.js"></script>
 <!-- Define inlined PaperScript associate it with myCanvas -->
 <script type="text/paperscript" canvas="myCanvas">
 project.currentStyle = {
@@ -12,7 +17,7 @@ project.currentStyle = {
 var nodes = {};
 
 function node (label, x, y, background) {
-  var circle = new Path.Circle([x, y], 50);
+  var circle = new Path.Circle([x, y], 75);
   circle.name = 'circle';
   circle.fillColor = background || 'black';
 
@@ -194,15 +199,47 @@ function getVector(radians, length) {
   });
 }
 
-var config = {CONFIG:"INSERT_HERE"};
+var units = {};
 
-if (config.nodes && config.paths) {
-  for (var name in config.nodes) {
-    node(name, config.nodes[name].x, config.nodes[name].y, config.nodes[name].color);
+function drawUnit (unit) {
+  // unit's index
+  var index;
+  var nodeUnits = board.getUnitsAt(unit.position);
+  for (index=nodeUnits.length-1; index>0; index--) {
+    if (unit.id == nodeUnits[index].id) {
+      break;
+    }
   }
-  for (var name in config.paths) {
-    link(name, config.paths[name]);
-  }
+
+  var node = nodes[unit.position];
+  var point = node.circle.position - [node.circle.bounds.width/2, node.circle.bounds.height/2];
+  point += 10 + 20 * (index+1);
+  var size = new Size(80, 30);
+  var rectangle = new Rectangle(point, size);
+  var cornerSize = new Size(10, 10);
+  var path = units[unit.id] = new Path.RoundRectangle(rectangle, cornerSize);
+  path.fillColor = 'white';
+  path.strokeColor = 'black';
+
+  var text = new PointText([point.x + 12, point.y + 18]);
+  text.name = 'text';
+  text.justification = 'left';
+  text.fillColor = 'black';
+  text.content = unit.force + '-' + unit.armor + ' (' + unit.health + ')';
+
+  units[unit.id] = new Group(path, text);
+
+  return units[unit.id];
+}
+
+
+
+for (var name in board.nodes) {
+  node(name, boardConfig.nodes[name].x, boardConfig.nodes[name].y, boardConfig.nodes[name].color);
+  board.nodes[name].units.forEach(drawUnit);
+}
+for (var name in board.paths) {
+  link(name, board.paths[name]);
 }
 
 </script>

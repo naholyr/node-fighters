@@ -35,6 +35,12 @@ function node (label, x, y, background) {
     if (item.glow) {
       item.glow.translate(event.delta);
     }
+    var boardUnits = board.getUnitsAt(label);
+    if (boardUnits) {
+      boardUnits.forEach(function (unit) {
+        units[unit.id].translate(event.delta);
+      });
+    }
     text.content = label + ': ' + circle.position.x + ',' + circle.position.y;
     redrawLinks(label);
   });
@@ -42,6 +48,12 @@ function node (label, x, y, background) {
     // Bring to front
     project.activeLayer.addChild(item.circle);
     project.activeLayer.addChild(item.text);
+    var boardUnits = board.getUnitsAt(label);
+    if (boardUnits) {
+      boardUnits.forEach(function (unit) {
+        project.activeLayer.addChild(units[unit.id]);
+      });
+    }
     // Select, and reachable nodes
     glow(item);
     if (links[label]) {

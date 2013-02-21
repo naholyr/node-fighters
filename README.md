@@ -80,7 +80,7 @@ In addition to those basic abilities, you can have some common others:
 * Jump: Unit can move to a node which is not directly reachable, but two steps away.
 * Motivate (passive): Unit gives all ally units on the same **controlled** node a defense and damages bonus.
 
-Some more specific abilites are available for specific units, you'll discover them :)
+Some more specific abilities are available for specific units, you'll discover them :)
 
 Each unit is given a role, depending its abilities. Here are some examples:
 
@@ -96,7 +96,7 @@ A fight is very easy:
 
 * Attacker attacks Defender.
 * If Defender has some special passive ability to avoid attack, it tries, and maybe fight ends here.
-* Attacker hits Defender: we calculate dealt damages by taking Attacker's [F]orce and substracting Defender's [A]rmor.
+* Attacker hits Defender: we calculate dealt damages by taking Attacker's [F]orce and subtracting Defender's [A]rmor.
 * If Attacker or Defender have special passive abilities that can modify dealt damages, let's apply them.
 * Defender loses [H]ealth.
 * Defender may die.
@@ -110,9 +110,9 @@ A dead unit is removed from the board, and is put in the "graveyard". Yes, there
 
 The player himself has some abilities:
 
-* Recruit a unit: he takes an available unit, and puts it on the board. If player has no unit on the board, he can put the new unit on any free nodes. If he has already put a unit on the board, he must put new ones on a node with a unit of his own. A freshly recruited unit can play right now, that can create a serious suprise effect.
-* Destroy a unit: he can kill a unit of his own, once per turn. That may sound strange but you could negociate with an opponent at this cost, or simply remove a unit with an embarassing negative ability. You could also imagine killing your last unit on board, to freely place a new unit wherever you want (oh you're so vicious).
-* Give up: he leaves the game, the unite are removed from board. Whenever it was the last opponnents with available leaders, you win.
+* Recruit a unit: he takes an available unit, and puts it on the board. If player has no unit on the board, he can put the new unit on any free nodes. If he has already put a unit on the board, he must put new ones on a node with a unit of his own. A freshly recruited unit can play right now, that can create a serious surprise effect.
+* Destroy a unit: he can kill a unit of his own, once per turn. That may sound strange but you could negotiate with an opponent at this cost, or simply remove a unit with an embarrassing negative ability. You could also imagine killing your last unit on board, to freely place a new unit wherever you want (oh you're so vicious).
+* Give up: he leaves the game, the unite are removed from board. Whenever it was the last opponents with available leaders, you win.
 
 ### Starting the game
 
